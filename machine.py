@@ -7,8 +7,11 @@ class Machine:
     position = (0,0)
     instructions = []
 
-    def __init__(self, instr) -> None:
+    def set(self, instr):
         self.instructions = instr.split('\n')
+        self.position = (0,0)
+        self.direction = (1,0)
+        self.size = (len(self.instructions[0]), len(self.instructions))
     
     def run(self):
         while self.direction != (0,0):
