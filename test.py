@@ -1,9 +1,10 @@
+import os
 import unittest
 import machine
 import commands
 import io_handler
 
-class Test(unittest.TestCase):
+class MachineTest1(unittest.TestCase):
     def setUp(self) -> None:
         self.machine = machine.Machine()
         self.io = io_handler.IOHandler()
@@ -60,6 +61,30 @@ class Test(unittest.TestCase):
         self.machine_run('0>v \n ^_@')
         self.machine_run('0v1 \n >| \n  >@')
         self.assertEqual(self.machine.stack, [])
+
+
+class MachineTest2(unittest.TestCase):
+    def setUp(self) -> None:
+        self.machine = machine.Machine()
+        self.io = io_handler.IOHandler()
+        commands.init(self.machine, self.io)
+
+    def machine_run(self, instr):
+        self.io.clear()
+        self.machine.set(instr)
+        self.machine.run()
+
+    files = [
+        ('hello.txt', 'Hello, World!'),
+    ]
+
+    def test(self):
+        for file,answer in self.files:
+            with open(f'./tests/{file}', 'r') as f:
+                self.machine_run(f.read())
+                print('\n'.join(self.io.outputLines))
+                self.assertEqual('\n'.join(self.io.outputLines), answer)
+
 
 if __name__ == "__main__":
     unittest.main()

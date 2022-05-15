@@ -29,14 +29,17 @@ def push(machine, value):
     machine.stack.append(value)
 
 def pop(machine):
+    if not len(machine.stack):
+        return 0
     return machine.stack.pop()
 
 def stringmode(machine):
     machine.stringmode = not machine.stringmode
 
 def dublicate(machine):
-    val = pop(machine)
-    machine.stack.extend([val]*2)
+    if len(machine.stack):
+        val = pop(machine)
+        machine.stack.extend([val]*2)
 
 def swap(machine):
     a = pop(machine)
@@ -48,10 +51,11 @@ def input(machine, io):
     push(machine, io.read())
 
 def output(machine, type, io):
-    if type == "int":
-        io.write(pop(machine))
-    if type == "char":
-        io.write(chr(pop(machine)))
+    if len(machine.stack):
+        if type == "int":
+            io.write(pop(machine))
+        if type == "char":
+            io.write(chr(pop(machine)))
 
 def math(machine, func):
     a = pop(machine)
