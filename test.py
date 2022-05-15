@@ -65,6 +65,12 @@ class MachineTest1(unittest.TestCase):
         self.machine_run('0v1 \n >| \n  >@')
         self.assertEqual(self.machine.stack, [])
 
+    def test_spec(self):
+        self.machine_run('00g,@')
+        self.assertEqual(self.io.outputLines, ['0'])
+        self.machine_run('"@"00p@')
+        self.assertEqual(''.join(self.machine.instructions[0]), '@@"00p@')
+
 
 class MachineTest2(unittest.TestCase):
     def setUp(self) -> None:
@@ -85,7 +91,7 @@ class MachineTest2(unittest.TestCase):
         for file,answer in self.files:
             with open(f'./tests/{file}', 'r') as f:
                 self.machine_run(f.read())
-                print('\n'.join(self.io.outputLines))
+                # print('\n'.join(self.io.outputLines))
                 self.assertEqual('\n'.join(self.io.outputLines), answer)
 
 

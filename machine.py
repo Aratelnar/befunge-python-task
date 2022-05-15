@@ -9,7 +9,7 @@ class Machine:
     stringmode = False
 
     def set(self, instr):
-        self.instructions = instr.split('\n')
+        self.instructions = [[chr for chr in line] for line in instr.split('\n')]
         self.position = (0,0)
         self.direction = (1,0)
         self.size = (len(self.instructions[0]), len(self.instructions))

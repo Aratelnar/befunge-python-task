@@ -82,12 +82,28 @@ def hor_if(machine):
     val = pop(machine)
     set_direction(machine, (-1,0) if val else (1,0))
 
+def get(machine):
+    y = pop(machine)
+    x = pop(machine)
+    if 0 <= x < machine.size[0]:
+        if 0 <= y < machine.size[1]:
+            push(machine, ord(machine.instructions[y][x]))
+            return
+    push(machine, 0)
+
+def put(machine):
+    y = pop(machine)
+    x = pop(machine)
+    v = pop(machine)
+    machine.instructions[y][x] = chr(v)
+
 def init(machine, io):
     init_move(machine)
     init_const(machine)
     init_stack(machine, io)
     init_math(machine)
     init_logic(machine)
+    init_spec(machine)
     pass
 
 def init_move(machine):
@@ -137,3 +153,7 @@ def init_logic(machine):
     machine.commands['`'] = gt
     machine.commands['|'] = vert_if
     machine.commands['_'] = hor_if
+
+def init_spec(machine):
+    machine.commands['g'] = get
+    machine.commands['p'] = put
