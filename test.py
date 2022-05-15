@@ -1,11 +1,13 @@
 import unittest
 import machine
 import commands
+import io_handler
 
 class Test(unittest.TestCase):
     def setUp(self) -> None:
         self.machine = machine.Machine()
-        commands.init(self.machine)
+        self.io = io_handler.IOHandler()
+        commands.init(self.machine, self.io)
 
     def test_exit(self):
         self.machine.set('@')
@@ -35,6 +37,14 @@ class Test(unittest.TestCase):
         self.machine.set('1:@')
         self.machine.run()
         self.assertEqual(self.machine.stack, [1,1])
+        self.machine.set('123...@')
+        self.machine.run()
+        self.assertEqual(self.io.outputLines, [3,2,1])
+        self.io.clear()
+        self.machine.set('"abc",,,@')
+        self.machine.run()
+        self.assertEqual(self.io.outputLines, ['cba'])
+        self.io.clear()
 
 if __name__ == "__main__":
     unittest.main()

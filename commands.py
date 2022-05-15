@@ -41,7 +41,22 @@ def swap(machine):
     push(machine, a)
     push(machine, b)
 
-def init(machine):
+def input(machine, io):
+    push(machine, io.read())
+
+def output(machine, type, io):
+    if type == "int":
+        io.write(pop(machine))
+    if type == "char":
+        io.write(chr(pop(machine)))
+
+def init(machine, io):
+    init_move(machine)
+    init_const(machine)
+    init_stack(machine, io)
+    pass
+
+def init_move(machine):
     machine.commands['@'] = stop
     machine.commands['>'] = right
     machine.commands['<'] = left
@@ -49,6 +64,7 @@ def init(machine):
     machine.commands['v'] = down
     machine.commands['?'] = rnd
 
+def init_const(machine):
     machine.commands['0'] = lambda m: push(m,0)
     machine.commands['1'] = lambda m: push(m,1)
     machine.commands['2'] = lambda m: push(m,2)
@@ -62,6 +78,9 @@ def init(machine):
 
     machine.commands['"'] = stringmode
 
+def init_stack(machine, io):
     machine.commands[':'] = dublicate
     machine.commands['\\'] = swap
-    pass
+    machine.commands['$'] = pop
+    machine.commands['.'] = lambda m: output(m, 'int', io)
+    machine.commands[','] = lambda m: output(m, 'char', io)
