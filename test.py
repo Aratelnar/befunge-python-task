@@ -31,5 +31,10 @@ class Test(unittest.TestCase):
         self.machine.run()
         self.assertEqual(self.machine.stack, [ord(i) for i in 'hello, world!'])
 
+    def test_stack(self):
+        self.machine.set('1:@')
+        self.machine.run()
+        self.assertEqual(self.machine.stack, [1,1])
+
 if __name__ == "__main__":
     unittest.main()

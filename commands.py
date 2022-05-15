@@ -1,3 +1,5 @@
+import random
+
 def set_direction(machine, direction=(0,0)):
     machine.direction = direction
 
@@ -16,6 +18,10 @@ def up(machine):
 def down(machine):
     set_direction(machine, (0,1))
 
+def rnd(machine):
+    dir = random.choice([(0,1),(0,-1),(1,0),(-1,0)])
+    set_direction(machine, dir)
+
 def push(machine, value):
     machine.stack.append(value)
 
@@ -25,12 +31,23 @@ def pop(machine):
 def stringmode(machine):
     machine.stringmode = not machine.stringmode
 
+def dublicate(machine):
+    val = pop(machine)
+    machine.stack.extend([val]*2)
+
+def swap(machine):
+    a = pop(machine)
+    b = pop(machine)
+    push(machine, a)
+    push(machine, b)
+
 def init(machine):
     machine.commands['@'] = stop
     machine.commands['>'] = right
     machine.commands['<'] = left
     machine.commands['^'] = up
     machine.commands['v'] = down
+    machine.commands['?'] = rnd
 
     machine.commands['0'] = lambda m: push(m,0)
     machine.commands['1'] = lambda m: push(m,1)
@@ -44,4 +61,7 @@ def init(machine):
     machine.commands['9'] = lambda m: push(m,9)
 
     machine.commands['"'] = stringmode
+
+    machine.commands[':'] = dublicate
+    machine.commands['\\'] = swap
     pass
