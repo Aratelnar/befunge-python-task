@@ -22,6 +22,9 @@ def rnd(machine):
     dir = random.choice([(0,1),(0,-1),(1,0),(-1,0)])
     set_direction(machine, dir)
 
+def bridge(machine):
+    machine.move()
+
 def push(machine, value):
     machine.stack.append(value)
 
@@ -55,11 +58,29 @@ def math(machine, func):
     b = pop(machine)
     push(machine, func(b,a))
 
+def inv(machine):
+    val = pop(machine)
+    push(machine, 0 if val else 1)
+
+def gt(machine):
+    a = pop(machine)
+    b = pop(machine)
+    push(machine, 1 if b > a else 0)
+
+def vert_if(machine):
+    val = pop(machine)
+    set_direction(machine, (0,-1) if val else (0,1))
+
+def hor_if(machine):
+    val = pop(machine)
+    set_direction(machine, (-1,0) if val else (1,0))
+
 def init(machine, io):
     init_move(machine)
     init_const(machine)
     init_stack(machine, io)
     init_math(machine)
+    init_logic(machine)
     pass
 
 def init_move(machine):
@@ -69,6 +90,7 @@ def init_move(machine):
     machine.commands['^'] = up
     machine.commands['v'] = down
     machine.commands['?'] = rnd
+    machine.commands['#'] = bridge
 
 def init_const(machine):
     machine.commands['0'] = lambda m: push(m,0)
@@ -100,3 +122,9 @@ def init_math(machine):
     reg_math(machine, '*', lambda x,y: x*y)
     reg_math(machine, '/', lambda x,y: x//y)
     reg_math(machine, '%', lambda x,y: x%y)
+
+def init_logic(machine):
+    machine.commands['!'] = inv
+    machine.commands['`'] = gt
+    machine.commands['|'] = vert_if
+    machine.commands['_'] = hor_if

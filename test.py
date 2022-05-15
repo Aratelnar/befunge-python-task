@@ -52,5 +52,14 @@ class Test(unittest.TestCase):
         self.machine_run('53%@')
         self.assertEqual(self.machine.stack, [2])
 
+    def test_logic(self):
+        self.machine_run('1!0!@')
+        self.assertEqual(self.machine.stack, [0,1])
+        self.machine_run('32`@')
+        self.assertEqual(self.machine.stack, [1])
+        self.machine_run('0>v \n ^_@')
+        self.machine_run('0v1 \n >| \n  >@')
+        self.assertEqual(self.machine.stack, [])
+
 if __name__ == "__main__":
     unittest.main()

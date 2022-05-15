@@ -19,10 +19,13 @@ class Machine:
         while self.direction != (0,0):
             self.run_one()
 
+    def move(self):
+        self.position = tuple((i + j) % k for i,j,k in zip(self.position, self.direction, self.size))
+
     def run_one(self):
         comm = self.instructions[self.position[1]][self.position[0]]
         if self.stringmode and comm != '"':
             self.stack.append(ord(comm))
         elif comm in self.commands:
             self.commands[comm](self)
-        self.position = tuple((i + j) % k for i,j,k in zip(self.position, self.direction, self.size))
+        self.move()
