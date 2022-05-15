@@ -50,10 +50,16 @@ def output(machine, type, io):
     if type == "char":
         io.write(chr(pop(machine)))
 
+def math(machine, func):
+    a = pop(machine)
+    b = pop(machine)
+    push(machine, func(b,a))
+
 def init(machine, io):
     init_move(machine)
     init_const(machine)
     init_stack(machine, io)
+    init_math(machine)
     pass
 
 def init_move(machine):
@@ -84,3 +90,13 @@ def init_stack(machine, io):
     machine.commands['$'] = pop
     machine.commands['.'] = lambda m: output(m, 'int', io)
     machine.commands[','] = lambda m: output(m, 'char', io)
+
+def reg_math(machine, comm, func):
+    machine.commands[comm] = lambda m: math(machine, func)
+
+def init_math(machine):
+    reg_math(machine, '+', lambda x,y: x+y)
+    reg_math(machine, '-', lambda x,y: x-y)
+    reg_math(machine, '*', lambda x,y: x*y)
+    reg_math(machine, '/', lambda x,y: x//y)
+    reg_math(machine, '%', lambda x,y: x%y)
