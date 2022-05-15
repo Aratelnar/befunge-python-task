@@ -14,5 +14,8 @@ class IOHandler:
     def clear(self):
         self.outputLines = []
 
-    def read(self):
-        return self.inputQueue.pop(0)
+    def read(self, type):
+        if len(self.inputQueue):
+            if type == 'int':
+                return int(self.inputQueue.pop(0))
+            return ord(self.inputQueue.pop(0)[0])

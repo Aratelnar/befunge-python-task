@@ -22,6 +22,9 @@ class Machine:
     def move(self):
         self.position = tuple((i + j) % k for i,j,k in zip(self.position, self.direction, self.size))
 
+    def reflect(self):
+        self.direction = tuple(-i for i in self.direction)
+
     def run_one(self):
         comm = self.instructions[self.position[1]][self.position[0]]
         if self.stringmode and comm != '"':

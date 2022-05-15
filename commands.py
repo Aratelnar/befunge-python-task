@@ -47,8 +47,11 @@ def swap(machine):
     push(machine, a)
     push(machine, b)
 
-def input(machine, io):
-    push(machine, io.read())
+def input(machine, type, io):
+    val = io.read(type)
+    if val is None:
+        machine.reflect()
+    push(machine, val)
 
 def output(machine, type, io):
     if len(machine.stack):
@@ -116,6 +119,8 @@ def init_stack(machine, io):
     machine.commands['$'] = pop
     machine.commands['.'] = lambda m: output(m, 'int', io)
     machine.commands[','] = lambda m: output(m, 'char', io)
+    machine.commands['&'] = lambda m: input(m, 'int', io)
+    machine.commands['~'] = lambda m: input(m, 'char', io)
 
 def reg_math(machine, comm, func):
     machine.commands[comm] = lambda m: math(machine, func)

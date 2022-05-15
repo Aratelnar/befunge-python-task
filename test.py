@@ -40,6 +40,9 @@ class MachineTest1(unittest.TestCase):
         self.assertEqual(self.io.outputLines, [3,2,1])
         self.machine_run('"abc",,,@')
         self.assertEqual(self.io.outputLines, ['cba'])
+        self.io.inputQueue = ['60','61','62']
+        self.machine_run('&&&,,,@')
+        self.assertEqual(self.io.outputLines, ['>=<'])
 
     def test_math(self):
         self.machine_run('23+@')
