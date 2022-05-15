@@ -22,6 +22,9 @@ def push(machine, value):
 def pop(machine):
     return machine.stack.pop()
 
+def stringmode(machine):
+    machine.stringmode = not machine.stringmode
+
 def init(machine):
     machine.commands['@'] = stop
     machine.commands['>'] = right
@@ -39,4 +42,6 @@ def init(machine):
     machine.commands['7'] = lambda m: push(m,7)
     machine.commands['8'] = lambda m: push(m,8)
     machine.commands['9'] = lambda m: push(m,9)
+
+    machine.commands['"'] = stringmode
     pass
