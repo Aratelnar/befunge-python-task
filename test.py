@@ -19,5 +19,10 @@ class Test(unittest.TestCase):
         self.machine.run()
         pass
 
+    def test_const(self):
+        self.machine.set('123@')
+        self.machine.run()
+        self.assertEqual(self.machine.stack, [1,2,3])
+
 if __name__ == "__main__":
     unittest.main()
