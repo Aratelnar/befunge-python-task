@@ -1,6 +1,3 @@
-from nbformat import read
-
-
 class IOHandler:
     inputQueue = []
     outputLines = []
@@ -19,3 +16,10 @@ class IOHandler:
             if type == 'int':
                 return int(self.inputQueue.pop(0))
             return ord(self.inputQueue.pop(0)[0])
+            
+
+class StdIOHandler(IOHandler):
+    def read(self, type):
+        x = input()
+        self.inputQueue.append(x if x else '\x00')
+        return super().read(type)

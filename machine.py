@@ -1,5 +1,3 @@
-
-
 class Machine:
     stack = []
     commands = {}

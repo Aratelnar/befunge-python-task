@@ -51,6 +51,7 @@ def input(machine, type, io):
     val = io.read(type)
     if val is None:
         machine.reflect()
+        return
     push(machine, val)
 
 def output(machine, type, io):
