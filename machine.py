@@ -10,7 +10,7 @@ class Machine:
         self.instructions = [[chr for chr in line] for line in instr.split('\n')]
         self.position = (0,0)
         self.direction = (1,0)
-        self.size = (len(self.instructions[0]), len(self.instructions))
+        self.size = (len(max(self.instructions, key=len)), len(self.instructions))
         self.stack = []
     
     def run(self):

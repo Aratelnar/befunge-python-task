@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "main.py",
             "args": [
-                "./tests/input/cat.txt"
+                "./tests/calc"
             ],
             "console": "integratedTerminal",
             "justMyCode": true
