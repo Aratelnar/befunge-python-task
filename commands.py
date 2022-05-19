@@ -1,7 +1,8 @@
 import random
+from machine import Coord
 
 def set_direction(machine, direction=(0,0)):
-    machine.direction = direction
+    machine.direction = Coord(*direction)
 
 def stop(machine):
     set_direction(machine)
@@ -86,8 +87,8 @@ def hor_if(machine):
 def get(machine):
     y = pop(machine)
     x = pop(machine)
-    if 0 <= x < machine.size[0]:
-        if 0 <= y < machine.size[1]:
+    if 0 <= x < machine.size.x:
+        if 0 <= y < machine.size.y:
             push(machine, ord(machine.instructions[y][x]))
             return
     push(machine, 0)

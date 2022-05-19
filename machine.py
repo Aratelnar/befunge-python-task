@@ -1,30 +1,49 @@
+class Coord:
+    def __init__(self, x, y) -> None:
+        self.x = x
+        self.y = y
+
+    def __add__(self, other):
+        return Coord(self.x+other.x, self.y+other.y)
+    
+    def __mod__(self, other):
+        return Coord(self.x%other.x, self.y%other.y)
+
+    def __neg__(self):
+        return Coord(-self.x, -self.y)
+
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
+
 class Machine:
     stack = []
     commands = {}
-    direction = (1,0)
-    position = (0,0)
+    direction = Coord(1,0)
+    position = Coord(0,0)
+    size = Coord(0,0)
     instructions = []
     stringmode = False
 
     def set(self, instr):
         self.instructions = [[chr for chr in line] for line in instr.split('\n')]
-        self.position = (0,0)
-        self.direction = (1,0)
-        self.size = (len(max(self.instructions, key=len)), len(self.instructions))
+        self.position = Coord(0,0)
+        self.direction = Coord(1,0)
+        self.size = Coord(len(max(self.instructions, key=len)), len(self.instructions))
         self.stack = []
     
     def run(self):
-        while self.direction != (0,0):
+        while self.direction != Coord(0,0):
             self.run_one()
 
     def move(self):
-        self.position = tuple((i + j) % k for i,j,k in zip(self.position, self.direction, self.size))
+        self.position += self.direction
 
     def reflect(self):
-        self.direction = tuple(-i for i in self.direction)
+        self.direction = -self.direction
 
     def run_one(self):
-        comm = self.instructions[self.position[1]][self.position[0]]
+        comm = self.instructions[self.position.y][self.position.x]
         if self.stringmode and comm != '"':
             self.stack.append(ord(comm))
         elif comm in self.commands:

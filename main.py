@@ -16,7 +16,7 @@ def main(argv=sys.argv[1:]):
     with open(args.file) as instr:
         m.set(instr.read())
         m.run()
-    for line in io.outputLines:
+    for line in io.output:
         print(line)
 
 if __name__ == "__main__":

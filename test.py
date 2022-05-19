@@ -36,12 +36,12 @@ class MachineTest1(unittest.TestCase):
         self.machine_run('1:@')
         self.assertEqual(self.machine.stack, [1,1])
         self.machine_run('123...@')
-        self.assertEqual(self.io.outputLines, [3,2,1])
+        self.assertEqual(self.io.output, '3 2 1 ')
         self.machine_run('"abc",,,@')
-        self.assertEqual(self.io.outputLines, ['cba'])
-        self.io.inputQueue = ['60','61','62']
+        self.assertEqual(self.io.output, 'cba')
+        self.io.input = ['60','61','62']
         self.machine_run('&&&,,,@')
-        self.assertEqual(self.io.outputLines, ['>=<'])
+        self.assertEqual(self.io.output, '>=<')
 
     def test_math(self):
         self.machine_run('23+@')
@@ -66,7 +66,7 @@ class MachineTest1(unittest.TestCase):
 
     def test_spec(self):
         self.machine_run('00g,@')
-        self.assertEqual(self.io.outputLines, ['0'])
+        self.assertEqual(self.io.output, '0')
         self.machine_run('"@"00p@')
         self.assertEqual(''.join(self.machine.instructions[0]), '@@"00p@')
 
@@ -91,7 +91,7 @@ class MachineTest2(unittest.TestCase):
             with open(f'./tests/{file}', 'r') as f:
                 self.machine_run(f.read())
                 # print('\n'.join(self.io.outputLines))
-                self.assertEqual('\n'.join(self.io.outputLines), answer)
+                self.assertEqual(self.io.output, answer)
 
 
 if __name__ == "__main__":
