@@ -29,6 +29,7 @@ class Machine:
         self.instructions = [[chr for chr in line] for line in instr.split('\n')]
         self.position = Coord(0,0)
         self.direction = Coord(1,0)
+        self.stringmode = False
         self.size = Coord(len(max(self.instructions, key=len)), len(self.instructions))
         self.stack = []
     
@@ -38,6 +39,7 @@ class Machine:
 
     def move(self):
         self.position += self.direction
+        self.position %= self.size
 
     def reflect(self):
         self.direction = -self.direction
