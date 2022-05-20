@@ -1,3 +1,5 @@
 # befunge-python-task
-Usege
+**Usege**
 python main.py path-to-file
+*or*
+python gui.py
