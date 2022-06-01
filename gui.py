@@ -60,6 +60,8 @@ class SandBox(QFrame):
         # self.setStyleSheet('background-color: #f0f0f0')
 
         self.instr = QGridLayout(self)
+        self.instr.setSpacing(5)
+        self.instr.setContentsMargins(5,5,5,5)
         self.pointer = machine.Coord(0,0)
 
         self.chars = []
@@ -75,8 +77,22 @@ class SandBox(QFrame):
         self.chars[self.pointer.y][self.pointer.x].setBorder('')
         self.pointer = pos
         self.chars[pos.y][pos.x].setBorder('border: 2px solid #ffd000')
-        
+
+    def update(self, instr):
+        h = len(instr)
+        w = len(max(instr, key=len))
+        for y in range(h):
+            for x in range(w):
+                if x < len(instr[y]):
+                    self.chars[y][x].setText(instr[y][x])
+                else:
+                    self.chars[y][x].setText('')
+
+    def getInstr(self):
+        return '\n'.join(''.join(i.text() for i in line) for line in self.chars)
+
     def setInstr(self, instr):
+        self.chars=[]
         h = len(instr)
         w = len(max(instr, key=len))
         for y in range(h):
@@ -97,9 +113,12 @@ class SandBox(QFrame):
             self.chars.append(line)
 
     def setGrid(self):
+        for i in reversed(range(self.instr.count())): 
+            self.instr.itemAt(i).widget().setParent(None)
         for y in range(len(self.chars)):
             for x in range(len(self.chars[0])):
                 self.instr.addWidget(self.chars[y][x], y, x)
+        self.setFixedSize(25*len(self.chars[0])+5, 30*len(self.chars))
 
 
 class Stack(QFrame):
@@ -133,22 +152,47 @@ class Stack(QFrame):
         return label
 
 
+class WindowIOHandler(IOHandler):
+    def __init__(self, parent) -> None:
+        self.parent = parent
+        super().__init__()
+
+    def read(self, type):
+        q = QInputDialog(self.parent)
+        q.setLabelText(f'Enter {type}:')
+        q.setWindowTitle("Input")
+        q.setStyleSheet('background-color: #3f3f3f; color: white')
+        q.setOkButtonText('Enter')
+        if type == 'char':
+            q.setInputMode(QInputDialog.InputMode.TextInput)
+            r = q.exec()
+            if r == QDialog.Accepted:
+                result = q.textValue()
+        if type == 'int':
+            q.setInputMode(QInputDialog.InputMode.IntInput)
+            r = q.exec()
+            if r == QDialog.Accepted:
+                result = q.intValue()
+        self.input.append(result if result else '\x00')
+        return super().read(type)
+
+
 class Main(QMainWindow):
 
     def __init__(self):
         super().__init__()
         self.init_menu()
-        self.setStyleSheet('background-color: #202020')
+        self.setStyleSheet('background-color: #202020;')
 
         self.setWindowTitle("Befunge debugger")
         self.resize(800, 600)
 
-        with open('tests/a.txt') as f:
+        with open('tests/input/factorial.txt') as f:
             self.data = f.read()
 
         self.machine = machine.Machine()
         self.machine.set(self.data)
-        self.io = IOHandler()
+        self.io = WindowIOHandler(self)
         self.running = False
         commands.init(self.machine, self.io)
 
@@ -225,6 +269,7 @@ class Main(QMainWindow):
                 self.running = True
                 self.sandbox.setPointer(self.machine.position)
                 self.output.setText(self.io.output)
+                self.sandbox.update(self.machine.instructions)
                 self.stack.setStack(self.machine.stack)
                 break
         else:
@@ -239,6 +284,7 @@ class Main(QMainWindow):
             self.running = True
             self.machine.run_one()
             self.sandbox.setPointer(self.machine.position)
+            self.sandbox.update(self.machine.instructions)
             self.output.setText(self.io.output)
             self.stack.setStack(self.machine.stack)
         else:
@@ -253,12 +299,39 @@ class Main(QMainWindow):
         exitAction = QAction('&Exit', self)
         exitAction.setShortcut('Ctrl+Q')
         exitAction.triggered.connect(app.quit)
+        
+        saveAction = QAction('&Save', self)
+        saveAction.setShortcut('Ctrl+S')
+        saveAction.triggered.connect(self.save_file)
+
+        openAction = QAction('&Open', self)
+        openAction.setShortcut('Ctrl+O')
+        openAction.triggered.connect(self.open_file)
 
         menubar = self.menuBar()
         menubar.setStyleSheet('background-color: #202020; color: white')
         fileMenu = menubar.addMenu('&File')
         fileMenu.setStyleSheet('background-color: #202020; color: white')
         fileMenu.addAction(exitAction)
+        fileMenu.addAction(saveAction)
+        fileMenu.addAction(openAction)
+
+    def save_file(self):
+        name = QFileDialog.getSaveFileName(self, 'Save File')[0]
+        if name == '':
+            return
+        with open(name,'w') as file:
+            self.data = self.sandbox.getInstr()
+            file.write(self.data)
+
+    def open_file(self):
+        name = QFileDialog.getOpenFileName(self, 'Open File')[0]
+        if name == '':
+            return
+        with open(name,'r') as file:
+            self.data = file.read()
+            self.sandbox.setInstr(self.data.split('\n'))
+            self.sandbox.setGrid()
 
 
 window = Main()

@@ -70,6 +70,16 @@ class MachineTest1(unittest.TestCase):
         self.machine_run('"@"00p@')
         self.assertEqual(''.join(self.machine.instructions[0]), '@@"00p@')
 
+    def test_rand(self):
+        list = []
+        for i in range(10):
+            self.machine_run('v  > v\n>#v?v \n  vvvv\n  1234\n@.<<<<')
+            list.append(int(self.io.output))
+        self.assertIn(1, list)
+        self.assertIn(2, list)
+        self.assertIn(3, list)
+        self.assertIn(4, list)
+
 
 class MachineTest2(unittest.TestCase):
     def setUp(self) -> None:
@@ -84,7 +94,7 @@ class MachineTest2(unittest.TestCase):
 
     files = [
         ('hello.txt', 'Hello, World!'),
-        ('a.txt', '2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 ')
+        ('sieve.txt', '2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 ')
     ]
 
     def test(self):
